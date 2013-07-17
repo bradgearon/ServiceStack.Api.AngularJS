@@ -1,0 +1,39 @@
+<div class="container-fluid" id="resources_container">
+    <div ng-repeat="api in metadata.apis" class="row-fuild">
+        <div class="navbar">
+            <div class="navbar-inner">
+                <ul class="nav">
+                    <a class="brand" ng-click="toggleOperations(api)">{{api.name}}</a>
+                    <li class="active">
+                        <a ng-click="api.collapse = !api.collapse">Show/Hide</a>
+                    </li>
+                    <li>
+                        <a ng-click="listOperations(api)">List Operations</a>
+                    </li>
+                    <li>
+                        <a ng-click="expandOperations(api)">Expand Operation</a>
+                    </li>
+                    <li>
+                        <a ng-click="raw(api)">Raw</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="row-fluid" collapse="api.collapse">
+            <div ng-repeat="api in api.resource.apis | limitTo: 1" class="span12">
+                <div class="row-fluid" ng-repeat="op in api.operations">
+                    <div class="pull-left well well-small {{getBtnMethod(op.httpMethod)}}">
+                        <strong style="color:#fff;">{{op.httpMethod}}</strong>
+                    </div>
+                    <div class="well well-small">
+                        <div>
+                            <a style="padding-left: 15px; font-size: 1.5em;">{{api.path}}</a>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <hr />
+    </div>
+</div>
