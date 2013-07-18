@@ -1,0 +1,54 @@
+﻿@import "/bootstrap/less/variables.less";
+@import "bootstrap/less/mixins.less";
+
+.api {
+    &-container {
+        padding-bottom: 10px;
+    }
+    margin-bottom: 4px; 
+    .toolbar {
+        padding: 10px 0;
+    }
+}
+
+.b(@a,@b) when (@a = a) { 
+    .border-radius(@baseBorderRadius);
+    .box-shadow(0 2px 4px lighten(@b, 15));
+}
+.b(@a,@b) when (@a = b) { 
+    .border-radius(@baseBorderRadius);
+    .box-shadow(0 1px 4px lighten(@b, 15));    
+}
+
+.colors(@lighten, @parent, @c, ...) {
+    .@{parent}-important &{ background-color: lighten(@errorText, @lighten); .b(@c, @errorText); }
+    .@{parent}-warning & { background-color: lighten(@orange, @lighten); .b(@c, @orange); }
+    .@{parent}-success & { background-color: lighten(@successText, @lighten); .b(@c, @successText); }
+    .@{parent}-info & { background-color: lighten(@infoText, @lighten); .b(@c, @infoText); }
+    .@{parent}-inverse & { background-color: lighten(@grayDark, @lighten); .b(@c, @grayDark); }
+}
+
+.colors(40, api, a);
+
+.title {
+    display: block;
+    float: left;
+    font-size: 20px;
+    padding: 11px 20px 11px;
+    font-weight: 200;
+    color: #fff;
+        
+    &:hover,
+    &:focus {
+        color: @white;
+        text-decoration: none;
+        cursor: pointer;
+    }
+    .colors(0, api, b);
+}
+
+.api-head { 
+    font-size: 1.6em !important;
+    font-weight: bold;
+}
+

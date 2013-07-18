@@ -3,33 +3,111 @@
         <div class="navbar">
             <div class="navbar-inner">
                 <ul class="nav">
-                    <a class="brand" ng-click="toggleOperations(api)">{{api.name}}</a>
-                    <li class="active">
-                        <a ng-click="api.collapse = !api.collapse">Show/Hide</a>
+                    <li>
+                        <a class="api-head" ng-click="toggleOperations(api)">{{api.path}}</a></>
+                    </li>
+                </ul>
+                <ul class="nav pull-right">
+                    <li ng-class="{'active': !api.collapse}">
+                        <a href="#" ng-click="api.collapse = !api.collapse">
+                            <i ng-class="{'icon-folder-open': !api.collapse, 'icon-folder-close': api.collapse}"></i>
+                        </a>
                     </li>
                     <li>
-                        <a ng-click="listOperations(api)">List Operations</a>
+                        <a href="#" ng-click="listAll(api)">
+                            <i class="icon-th-list"></i>
+                        </a>
                     </li>
                     <li>
-                        <a ng-click="expandOperations(api)">Expand Operation</a>
+                        <a href="#" ng-click="expandAll(api)">
+                            <i ng-class="{'icon-chevron-down': !api.expandAll, 'icon-chevron-up': api.expandAll}"></i>
+                        </a>
                     </li>
                     <li>
-                        <a ng-click="raw(api)">Raw</a>
+                        <a ng-href="{{api.resource.basePath}}{{api.resource.resourcePath}}" target="_blank">
+                            <i class="icon-fullscreen"></i>
+                        </a>
                     </li>
                 </ul>
             </div>
         </div>
-        <div class="row-fluid" collapse="api.collapse">
-            <div ng-repeat="api in api.resource.apis | limitTo: 1" class="span12">
-                <div class="row-fluid" ng-repeat="op in api.operations">
-                    <div class="pull-left well well-small {{getBtnMethod(op.httpMethod)}}">
-                        <strong style="color:#fff;">{{op.httpMethod}}</strong>
-                    </div>
-                    <div class="well well-small">
-                        <div>
-                            <a style="padding-left: 15px; font-size: 1.5em;">{{api.path}}</a>
+        <div collapse="api.collapse">
+            <div ng-repeat="rapi in api.resource.apis" class="api-container">
+                <div class="row-fluid" ng-repeat="op in rapi.operations" style="margin-bottom: 10px;">
+                    <a ng-click="op.open = !op.open" href="#">
+                        <div class="api api-{{resourceClass[op.httpMethod]}}">
+                            <div class="title">{{op.httpMethod}}</div>
+                            <div class="toolbar">
+                                <span style="padding-left: 15px; font-size: 1.5em;">{{rapi.path}}</span>
+                            </div>
+                            <div class="description">{{api.description}}</div>
                         </div>
+                    </a>
+                    <div collapse="!op.open">
+                        <div class="container-fluid well">
+                            <div class="row-fluid">
+                                <div class="span6">
+                                    <div class="row-fluid">
+                                        <b>Parameters</b>
+                                    </div>
+                                    <hr>
+                                    <div class="media row-fluid" ng-repeat="parameter in op.parameters">
+                                        <form class="media-body" name="restModel" ng-init="parameters = {}">
+                                            <table class="table table-condensed table-striped table-hover">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Name</th>
+                                                        <th>Type</th>
+                                                        <th>Required</th>
+                                                        <th>Value</th>
+                                                    </tr>
+                                                </thead>
+                                                <tr ng-repeat="(key, prop) in api.resource.models[parameter.dataType].properties">
+                                                    <td>{{key}}</td>
+                                                    <td>{{(prop.items && prop.items.type) && prop.items.type + '[]' || prop.type}}</td>
+                                                    <td>{{prop.required}}</td>
+                                                    <td>
+                                                        <input type="text" ng-model="parameters[key]" ng-list ng-show="prop.items" />
+                                                        <input type="text" ng-model="parameters[key]" ng-show="!prop.items" />
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </form>
+                                    </div>
+                                    <div class="form-actions">
+                                        <button type="submit" class="btn btn-primary" ng-click="submitModel(parameters, op.httpMethod, api.name)">Submit</button>
+                                        <pre lang="javascript">{{results}}</pre>
+                                    </div>
+                                </div>
 
+                                <div class="span6">
+                                    <div class="row-fluid">
+                                        <b>Parameters</b>
+                                    </div>
+                                    <hr>
+                                    <div class="media row-fluid" ng-repeat="parameter in op.parameters">
+                                        <div class="media-body">
+                                            <table class="table table-rows">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Name</th>
+                                                        <th>Type</th>
+                                                        <th>Required</th>
+                                                    </tr>
+                                                </thead>
+                                                <tr ng-repeat="(key, prop) in api.resource.models[parameter.dataType].properties">
+                                                    <td>{{key}}</td>
+                                                    <td>{{(prop.items && prop.items.type) && prop.items.type + '[]' || prop.type}}</td>
+                                                    <td>{{prop.required}}</td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row-fluid">
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
