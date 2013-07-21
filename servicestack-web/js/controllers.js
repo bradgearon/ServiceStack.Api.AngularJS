@@ -1,8 +1,8 @@
 'use strict';
 /* Controllers */
-var inject = ['$scope', '$location', 'Model', '$routeParams', '$cookies', '$interpolate'];
+var inject = ['$scope', '$location', 'Model', '$routeParams', '$cookies', '$interpolate', '$http'];
 
-function MetaCtrl($scope, $location, Model, $routeParams, $cookies, $interpolate) {
+function MetaCtrl($scope, $location, Model, $routeParams, $cookies, $interpolate, $http) {
 
     $scope.resourceClass = {
         "GET": "info",
@@ -20,17 +20,37 @@ function MetaCtrl($scope, $location, Model, $routeParams, $cookies, $interpolate
         'QUERY': 'query'
     };
 
+    var alertStatus = {
+
+    };
+
     $scope.submitModel = function (pathFn, action, model, query, op) {
         var url = pathFn(query);
         var svc = new Model();
+        op.request = {};
+        op.response = {};
 
         if (action != 'GET') {
             angular.extend(svc, model);
         }
 
-        svc.doAction(url, resourceFn[action])(model, function (result) {
-            op.results = result;
+        var transformRequest = function (fn, headerFn) {
+            op.request.headers = headerFn();
+            op.request.url = url;
+        };
+
+        svc.doAction(url, resourceFn[action], transformRequest)(model, function (result, headers) {
+            op.response.data = result;
+            op.response.headers = headers();
+        },
+        function (error) {
+            op.response.error = {
+                data: error.data,
+                headers: error.headers(),
+                status: error.status
+            };
         });
+
     };
 
     var expandAll = function (api) {
