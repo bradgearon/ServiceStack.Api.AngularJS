@@ -1,68 +1,97 @@
 'use strict';
 /* Controllers */
-var inject = ['$scope', '$location', 'Model', '$routeParams', '$cookies', '$parse'];
+var inject = ['$scope', '$location', 'Model', '$routeParams', '$cookies', '$interpolate'];
 
-function MyCtrl1() {}
-MyCtrl1.$inject = [];
+function MetaCtrl($scope, $location, Model, $routeParams, $cookies, $interpolate) {
 
+    $scope.resourceClass = {
+        "GET": "info",
+        "POST": "success",
+        "PUT": "warning",
+        "DELETE": "important",
+        "QUERY": "info"
+    };
 
-function MyCtrl2() {
+    var resourceFn = {
+        "GET": 'get',
+        "POST": 'save',
+        "PUT": 'update',
+        "DELETE": 'delete',
+        'QUERY': 'query'
+    };
 
-}
-MyCtrl2.$inject = [];
+    $scope.submitModel = function (pathFn, action, model, query, op) {
+        var url = pathFn(query);
+        var svc = new Model();
 
-function MetaCtrl($scope, $location, Model, $routeParams, $cookies, $parse) {
-	
-	$scope.resourceClass = {
-		"GET": "info",
-		"POST": "success",
-		"PUT": "warning",
-		"DELETE": "important"
-	};
+        if (action != 'GET') {
+            angular.extend(svc, model);
+        }
 
-	var resourceFn = {
-	    "GET": 'get',
-	    "POST": 'save',
-	    "PUT": 'update',
-	    "DELETE": 'delete'
-	};
+        svc.doAction(url, resourceFn[action])(model, function (result) {
+            op.results = result;
+        });
+    };
 
-	$scope.submitModel = function (model, action, path) {
-	    var cleanPath = path.replace(/\{/g, ':');
-	    $scope.results = Model[resourceFn[action]]({ service: cleanPath }, model);
-	    
-	};
+    var expandAll = function (api) {
+        $(api.resource.apis).each(function () {
+            var thisApi = this;
+            thisApi.collapse = true;
+            $(thisApi.operations).each(function () {
+                this.open = api.expandAll;
+            });
+        });
+    }
 
-	var expandAll = function (api) {
-	    $(api.resource.apis).each(function () {
-	        var thisApi = this;
-	        thisApi.collapse = true;
-	        $(thisApi.operations).each(function () {
-	            this.open = api.expandAll;
-	        });
-	    });
-	}
+    $scope.expandAll = function (api) {
+        api.expandAll = !api.expandAll;
+        expandAll(api);
+    }
 
-	$scope.expandAll = function (api) {
-	    api.expandAll = !api.expandAll;
-	    expandAll(api);
-	}
+    $scope.listAll = function (api) {
+        api.expandAll = false;
+        expandAll(api);
+    }
 
-	$scope.listAll = function (api) {
-	    api.expandAll = false;
-	    expandAll(api);
-	}
-
-	$scope.metadata = Model.get({ service: 'resources' }, function (response){ 
-	    for (var i = 0; i < response.apis.length; i++) {
-
-	        response.apis[i].name =
+    $scope.metadata = Model.get({ service: 'resources' }, function (response) {
+        for (var i = 0; i < response.apis.length; i++) {
+            var basePath = response.basePath;
+            response.apis[i].name =
                 $(response.apis[i].path.split('/')).last().get(0);
 
-	        $scope.metadata.apis[i].resource =
-                Model.get({ service: 'resource', resource: response.apis[i].name });
-		}
-	});
+            var resource = {
+                service: 'resource',
+                resource: response.apis[i].name
+            };
+
+            $scope.metadata.apis[i].resource = Model.get(resource, function (response) {
+                angular.forEach(response.apis, function (api) {
+                    var url = basePath + api.path.replace(/\{([^{}*]*)\*?\}/, '{{$1}}');
+                    api.pathFn = $interpolate(url);
+                    angular.forEach(api.operations, function (operation) {
+                        if (operation.httpMethod == 'GET'
+                            && operation.responseClass
+                            && operation.responseClass.indexOf('[') > 0) {
+                            operation.httpMethod = 'QUERY';
+                        }
+                        operation.queryParameters = [];
+                        angular.forEach(api.pathFn.parts, function (part) {
+                            if (typeof part === 'function') {
+                                var prop = {
+                                    name: part.exp,
+                                    dataType: 'text',
+                                    paramType: 'query',
+                                    required: false
+                                };
+                                operation.queryParameters.push(prop);
+                            }
+                        });
+
+                    });
+                });
+            });
+        }
+    });
 }
 
-MetaCtrl.$inject = inject; 
+MetaCtrl.$inject = inject;

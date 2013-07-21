@@ -36,8 +36,8 @@ namespace servicestack_web
 	}
 
     //REST Resource DTO
-    [Route("/todos")]
-    [Route("/todos/{Ids}")]
+    [Route("/todos", "GET")]
+    [Route("/todos/{Ids}", "GET")]
     public class Todos : IReturn<List<Todo>>
     {
         public long[] Ids { get; set; }

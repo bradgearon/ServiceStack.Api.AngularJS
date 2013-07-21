@@ -370,7 +370,6 @@
     <Content Include="lib\bootstrap\bootstrap.js" />
     <Content Include="lib\jquery\jquery.min.js" />
     <Content Include="partials\meta.html" />
-    <Content Include="README.txt" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>

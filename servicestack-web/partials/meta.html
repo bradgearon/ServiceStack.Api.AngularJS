@@ -20,7 +20,7 @@
                     </li>
                     <li>
                         <a href="#" ng-click="expandAll(api)">
-                            <i ng-class="{'icon-chevron-down': !api.expandAll, 'icon-chevron-up': api.expandAll}"></i>
+                            <i ng-class="{'icon-chevron-down': api.expandAll, 'icon-chevron-up': !api.expandAll}"></i>
                         </a>
                     </li>
                     <li>
@@ -44,15 +44,37 @@
                         </div>
                     </a>
                     <div collapse="!op.open">
-                        <div class="container-fluid well">
-                            <div class="row-fluid">
-                                <div class="span6">
-                                    <div class="row-fluid">
-                                        <b>Parameters</b>
-                                    </div>
-                                    <hr>
-                                    <div class="media row-fluid" ng-repeat="parameter in op.parameters">
-                                        <form class="media-body" name="restModel" ng-init="parameters = {}">
+                        <div class="row-fluid well">
+                            <div class="span6">
+                                <div class="row-fluid">
+                                    <form class="media-body" name="restModel" ng-init="query = {}; parameters = {}">
+                                        <div class="row-fluid">
+                                            <b>Query Parameters</b>
+                                        </div>
+                                        <hr>
+                                        <table class="table table-condensed table-striped table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th>Name</th>
+                                                    <th>Type</th>
+                                                    <th>Required</th>
+                                                    <th>Value</th>
+                                                </tr>
+                                            </thead>
+                                            <tr ng-repeat="parameter in op.queryParameters">
+                                                <td>{{parameter.name}}</td>
+                                                <td>{{parameter.dataType}}</td>
+                                                <td>{{parameter.required}}</td>
+                                                <td>
+                                                    <input type="text" ng-model="query[parameter.name]" ng-required="prop.required" />
+                                                </td>
+                                            </tr>
+                                        </table>
+                                        <div class="row-fluid">
+                                            <b>Body Parameters</b>
+                                        </div>
+                                        <hr>
+                                        <div class="row-fluid" ng-repeat="parameter in op.parameters">
                                             <table class="table table-condensed table-striped table-hover">
                                                 <thead>
                                                     <tr>
@@ -62,56 +84,64 @@
                                                         <th>Value</th>
                                                     </tr>
                                                 </thead>
+                                                <tr ng-show="parameter.name">
+                                                    <td>{{parameter.name}}</td>
+                                                    <td>{{parameter.dataType}}</td>
+                                                    <td>{{parameter.required}}</td>
+                                                    <td>
+                                                        <input type="text" ng-model="parameters[parameter.name]" ng-required="prop.required" />
+                                                    </td>
+                                                </tr>
                                                 <tr ng-repeat="(key, prop) in api.resource.models[parameter.dataType].properties">
                                                     <td>{{key}}</td>
                                                     <td>{{(prop.items && prop.items.type) && prop.items.type + '[]' || prop.type}}</td>
                                                     <td>{{prop.required}}</td>
                                                     <td>
-                                                        <input type="text" ng-model="parameters[key]" ng-list ng-show="prop.items" />
-                                                        <input type="text" ng-model="parameters[key]" ng-show="!prop.items" />
+                                                        <input type="text" ng-model="parameters[key]" ng-required="prop.required" />
                                                     </td>
                                                 </tr>
                                             </table>
-                                        </form>
-                                    </div>
-                                    <div class="form-actions">
-                                        <button type="submit" class="btn btn-primary" ng-click="submitModel(parameters, op.httpMethod, api.name)">Submit</button>
-                                        <pre lang="javascript">{{results}}</pre>
-                                    </div>
-                                </div>
-
-                                <div class="span6">
-                                    <div class="row-fluid">
-                                        <b>Parameters</b>
-                                    </div>
-                                    <hr>
-                                    <div class="media row-fluid" ng-repeat="parameter in op.parameters">
-                                        <div class="media-body">
-                                            <table class="table table-rows">
-                                                <thead>
-                                                    <tr>
-                                                        <th>Name</th>
-                                                        <th>Type</th>
-                                                        <th>Required</th>
-                                                    </tr>
-                                                </thead>
-                                                <tr ng-repeat="(key, prop) in api.resource.models[parameter.dataType].properties">
-                                                    <td>{{key}}</td>
-                                                    <td>{{(prop.items && prop.items.type) && prop.items.type + '[]' || prop.type}}</td>
-                                                    <td>{{prop.required}}</td>
-                                                </tr>
-                                            </table>
                                         </div>
-                                    </div>
+                                        <div class="form-actions">
+                                            <button type="submit" class="btn btn-primary" ng-click="submitModel(rapi.pathFn, op.httpMethod, parameters, query, op)">Submit</button>
+                                        </div>
+                                        <pre lang="javascript">{{op.results}}</pre>
+                                    </form>
                                 </div>
                             </div>
-                            <div class="row-fluid">
+
+                            <div class="span6">
+                                <div class="row-fluid">
+                                    <b>Parameters</b>
+                                </div>
+                                <hr>
+                                <div class="media row-fluid" ng-repeat="parameter in op.parameters">
+                                    <div class="media-body">
+                                        <table class="table table-rows">
+                                            <thead>
+                                                <tr>
+                                                    <th>Name</th>
+                                                    <th>Type</th>
+                                                    <th>Required</th>
+                                                </tr>
+                                            </thead>
+                                            <tr ng-repeat="(key, prop) in api.resource.models[parameter.dataType].properties">
+                                                <td>{{key}}</td>
+                                                <td>{{(prop.items && prop.items.type) && prop.items.type + '[]' || prop.type}}</td>
+                                                <td>{{prop.required}}</td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </div>
                             </div>
                         </div>
+                        <div class="row-fluid">
+                        </div>
                     </div>
-                </div>
             </div>
         </div>
-        <hr />
     </div>
+</div>
+<hr />
+</div>
 </div>
