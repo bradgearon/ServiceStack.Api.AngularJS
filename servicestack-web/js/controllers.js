@@ -27,6 +27,7 @@ function MetaCtrl($scope, $location, Model, $routeParams, $cookies, $interpolate
     $scope.submitModel = function (pathFn, action, model, query, op) {
         var url = pathFn(query);
         var svc = new Model();
+
         op.request = {};
         op.response = {};
 
@@ -39,15 +40,16 @@ function MetaCtrl($scope, $location, Model, $routeParams, $cookies, $interpolate
             op.request.url = url;
         };
 
-        svc.doAction(url, resourceFn[action], transformRequest)(model, function (result, headers) {
-            op.response.data = result;
-            op.response.headers = headers();
-        },
-        function (error) {
-            op.response.error = {
-                data: error.data,
-                headers: error.headers(),
-                status: error.status
+        svc.doAction(url, resourceFn[action], transformRequest)(model,
+            function (result, headers) {
+                op.response.data = result;
+                op.response.headers = headers();
+            },
+            function (error) {
+                op.response.error = {
+                    data: error.data,
+                    headers: error.headers(),
+                    status: error.status
             };
         });
 

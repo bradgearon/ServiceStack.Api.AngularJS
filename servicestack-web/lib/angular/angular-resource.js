@@ -3,7 +3,7 @@
  * (c) 2010-2012 Google, Inc. http://angularjs.org
  * License: MIT
  */
-(function(window, angular, undefined) {
+(function (window, angular, undefined) {
 'use strict';
 
 /**

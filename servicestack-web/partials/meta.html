@@ -46,14 +46,14 @@
                     <div collapse="!op.open" ng-class="{'well': op.open}">
                         <div class="row-fluid">
                             <ul class="nav nav-tabs">
-                                <li class="active"><a data-toggle="tab" data-target="#{{op.nickname}}-parameters">Parameters</a></li>
-                                <li><a data-toggle="tab" data-target="#{{op.nickname}}-model">Model</a></li>
+                                <li class="active"><a data-toggle="tab" data-target="#{{op.$$hashKey}}-parameters">Parameters</a></li>
+                                <li><a data-toggle="tab" data-target="#{{op.$$hashKey}}-model">Model</a></li>
                             </ul>
                             <div class="tab-content">
-                                <div class="tab-pane active" id="{{op.nickname}}-parameters">
+                                <div class="tab-pane active" id="{{op.$$hashKey}}-parameters">
                                     <div>
                                         <form class="form-horizontal" name="restModel" ng-init="query = {}; parameters = {}">
-                                            <fieldset>
+                                            <fieldset ng-show="op.queryParameters && op.queryParameters.length > 0">
                                                 <legend>Query Parameters</legend>
                                                 <div ng-repeat="parameter in op.queryParameters">
                                                     <div class="control-group">
@@ -67,7 +67,7 @@
                                                     </div>
                                                 </div>
                                             </fieldset>
-                                            <fieldset>
+                                            <fieldset ng-show="op.parameters && op.parameters.length > 0">
                                                 <legend>Body Parameters</legend>
                                                 <div ng-repeat="parameter in op.parameters">
                                                     <div class="control-group" ng-repeat="(key, prop) in api.resource.models[parameter.dataType].properties">
@@ -80,16 +80,16 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="form-actions">
-                                                    <button type="submit" class="btn btn-primary"
-                                                        ng-click="submitModel(rapi.pathFn, op.httpMethod, parameters, query, op)">
-                                                        Submit</button>
-                                                </div>
                                             </fieldset>
+                                            <div class="form-actions">
+                                                <button type="submit" class="btn btn-primary"
+                                                    ng-click="submitModel(rapi.pathFn, op.httpMethod, parameters, query, op)">
+                                                    Submit</button>
+                                            </div>
                                         </form>
                                     </div>
                                 </div>
-                                <div class="tab-pane" id="{{op.nickname}}-model">
+                                <div class="tab-pane" id="{{op.$$hashKey}}-model">
                                     <fieldset>
                                         <legend>Response Model</legend>
                                         <div class="row-fluid" ng-show="api.resource.models[op.responseClass]">
@@ -106,59 +106,65 @@
                             </div>
                         </div>
 
-                    <div class="row-fluid" ng-show="op.request">
-                        <h3>Request Url: </h3>
-                        <div class="alert alert-info">{{op.request.url}}</div>
-                    </div>
-
-                    <div class="row-fluid" ng-show="op.request">
-                        <h3>Request Headers: </h3>
-                        <div class="alert alert-info">
-                            <p ng-repeat="(key, prop) in op.request.headers" ng-show="prop">
-                                <b>{{key}}</b>
-                                <span>{{prop}}</span>
-                            </p>
+                        <div class="row-fluid" ng-show="op.request">
+                            <h3>Request Url: </h3>
+                            <div class="alert alert-info">{{op.request.url}}</div>
                         </div>
-                    </div>
 
-                    <div class="row-fluid" ng-show="op.response.headers">
-                        <h3>Response Headers: </h3>
-                        <div class="alert alert-success">
-                            <p ng-repeat="(key, prop) in op.response.headers" ng-show="prop">
-                                <b>{{key}}</b>
-                                <span>{{prop}}</span>
-                            </p>
+                        <div class="row-fluid" ng-show="op.request">
+                            <h3>Request Headers: </h3>
+                            <div class="alert alert-info">
+                                <p ng-repeat="(key, prop) in op.request.headers" ng-show="prop">
+                                    <b>{{key}}</b>
+                                    <span>{{prop}}</span>
+                                </p>
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="row-fluid" ng-show="op.response.data">
-                        <h3>Response Data: </h3>
-                        <div class="alert alert-success" ng-repeat="data in op.response.data">
-                            <p ng-repeat="(key, prop) in data" ng-show="prop">
-                                <b>{{key}}</b>
-                                <span>{{prop}}</span>
-                            </p>
+                        <div class="row-fluid" ng-show="op.response.headers">
+                            <h3>Response Headers: </h3>
+                            <div class="alert alert-success">
+                                <p ng-repeat="(key, prop) in op.response.headers">
+                                    <b>{{key}}</b>
+                                    <span>{{prop}}</span>
+                                </p>
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="row-fluid" ng-show="op.response.error.headers">
-                        <h3>Response Error Headers: </h3>
-                        <div class="alert alert-warning">
-                            <p ng-repeat="(key, prop) in op.response.error.headers" ng-show="prop">
-                                <b>{{key}}</b>
-                                <span>{{prop}}</span>
-                            </p>
+                        <div class="row-fluid" ng-show="op.response.data">
+                            <h3>Response Data: </h3>
+                            <div class="alert alert-success" ng-show="!op.response.data.push">
+                                <span>
+                                    {{op.response.data}}
+                                </span>
+                            </div> 
+                            <div class="alert alert-success" ng-repeat="data in op.response.data" 
+                                ng-show="op.response.data.push">
+                                <span ng-repeat="(key, prop) in data">
+                                    <b>{{key}}</b>
+                                    <span>{{prop}}</span>
+                                </span>
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="row-fluid" ng-show="op.response.error.data">
-                        <h3>Response Error Data: </h3>
-                        <div class="alert alert-error">
-                            <span>{{op.response.error.data}}</span>
+                        <div class="row-fluid" ng-show="op.response.error.headers">
+                            <h3>Response Error Headers: </h3>
+                            <div class="alert alert-warning">
+                                <p ng-repeat="(key, prop) in op.response.error.headers">
+                                    <b>{{key}}</b>
+                                    <span>{{prop}}</span>
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="row-fluid" ng-show="op.response.error.data">
+                            <h3>Response Error Data: </h3>
+                            <div class="alert alert-error">
+                                <span>{{op.response.error.data}}</span>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
+            <hr />
         </div>
-        <hr />
-    </div>
