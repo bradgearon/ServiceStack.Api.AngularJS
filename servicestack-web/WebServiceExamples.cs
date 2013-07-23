@@ -10,6 +10,7 @@ using ServiceStack.ServiceInterface;
 using ServiceStack.ServiceInterface.Auth;
 using ServiceStack.ServiceInterface.ServiceModel;
 using ServiceStack.WebHost.Endpoints;
+using System.Net;
 
 namespace servicestack_web
 {
@@ -47,7 +48,9 @@ namespace servicestack_web
         }
     }
 
-    [Route("/todos", "POST")]
+    [Api("Service Description")]
+    [ApiResponse(HttpStatusCode.BadRequest, "Your request was not understood")]
+    [Route("/todos", "POST", Summary = "Adds a todo", Notes = "Some notes")]
     [Route("/todos/{Id}", "PUT")]
     public class Todo : IReturn<Todo>
     {
@@ -60,6 +63,7 @@ namespace servicestack_web
     public class TodosService : Service
     {
         public TodoRepository Repository { get; set; }  //Injected by IOC
+
 
         public object Get(Todos request)
         {

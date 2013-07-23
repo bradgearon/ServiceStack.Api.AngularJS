@@ -2,12 +2,39 @@
 @import "bootstrap/less/mixins.less";
 
 .api {
+    .path {
+        padding-left: 15px; 
+        font-size: @fontSizeLarge;
+    }
+    .title {
+        display: block;
+        float: left;
+        font-size: 20px;
+        padding: 11px 20px 11px;
+        font-weight: 200;
+        color: #fff;
+
+        &:hover,
+        &:focus {
+            color: @white;
+            text-decoration: none;
+            cursor: pointer; 
+        }
+    }
+
     &-container {
         padding-bottom: 10px;
     }
-    margin-bottom: 4px; 
+
+    margin-bottom: 4px;
+
     .toolbar {
         padding: 10px 0;
+    }
+
+    .description {
+        padding-right: 15px; 
+        font-size: @fontSizeLarge;
     }
 }
 
@@ -31,24 +58,15 @@
 .colors(40, api, a);
 
 .title {
-    display: block;
-    float: left;
-    font-size: 20px;
-    padding: 11px 20px 11px;
-    font-weight: 200;
-    color: #fff;
-        
-    &:hover,
-    &:focus {
-        color: @white;
-        text-decoration: none;
-        cursor: pointer;
-    }
     .colors(0, api, b);
 }
 
 .api-head { 
     font-size: 1.6em !important;
     font-weight: bold;
+}
+
+.nav-tabs {
+    cursor: pointer;
 }
 

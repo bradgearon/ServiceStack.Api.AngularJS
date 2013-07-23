@@ -28,11 +28,33 @@
 .api {
   margin-bottom: 4px;
 }
+.api .path {
+  padding-left: 15px;
+  font-size: 17.5px;
+}
+.api .title {
+  display: block;
+  float: left;
+  font-size: 20px;
+  padding: 11px 20px 11px;
+  font-weight: 200;
+  color: #fff;
+}
+.api .title:hover,
+.api .title:focus {
+  color: #ffffff;
+  text-decoration: none;
+  cursor: pointer;
+}
 .api-container {
   padding-bottom: 10px;
 }
 .api .toolbar {
   padding: 10px 0;
+}
+.api .description {
+  padding-right: 15px;
+  font-size: 17.5px;
 }
 .api-important {
   background-color: #f1dcdc;
@@ -78,20 +100,6 @@
   -webkit-box-shadow: 0 2px 4px #595959;
   -moz-box-shadow: 0 2px 4px #595959;
   box-shadow: 0 2px 4px #595959;
-}
-.title {
-  display: block;
-  float: left;
-  font-size: 20px;
-  padding: 11px 20px 11px;
-  font-weight: 200;
-  color: #fff;
-}
-.title:hover,
-.title:focus {
-  color: #ffffff;
-  text-decoration: none;
-  cursor: pointer;
 }
 .api-important .title {
   background-color: #b94a48;
@@ -141,4 +149,7 @@
 .api-head {
   font-size: 1.6em !important;
   font-weight: bold;
+}
+.nav-tabs {
+  cursor: pointer;
 }

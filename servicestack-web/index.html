@@ -2,34 +2,12 @@
 <html lang="en" ng-app="myApp">
 <head>
     <meta charset="utf-8">
-    <title>Apidocs Demo</title>
+    <title>Api Documentation</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
-    <link rel="stylesheet" href="css/bootstrap.css" />
-    <style type="text/css">
-        body {
-            padding-top: 60px;
-            padding-bottom: 40px;
-        }
-
-        .sidebar-nav {
-            padding: 9px 0;
-        }
-
-        .navbar-fixed-top {
-            top: 0;
-        }
-
-        @media (max-width: 980px) {
-            /* Enable use of floated navbar text */
-            .navbar-text.pull-right {
-                float: none;
-                padding-left: 5px;
-                padding-right: 5px;
-            }
-        }
-    </style>
+    <link rel="stylesheet" ng-href="css/{{theme}}.css" ng-init="theme = 'bootstrap'" />
+    <link rel="stylesheet" href="css/app.css" />
     <link rel="stylesheet" href="css/bootstrap-responsive.css" />
     <link rel="stylesheet" href="css/api.css" />
     <link rel="stylesheet" href="css/font-awesome.min.css" />
@@ -44,6 +22,14 @@
                     <span class="icon-bar"></span>
                 </button>
                 <a class="brand" href="/">AngularJS docs Demo</a>
+                <ul class="nav pull-right">
+                    <li ng-class="{'active': theme == 'bootstrap'}" class="active">
+                        <a href="#" ng-click="theme = 'bootstrap'">boostrap</a>
+                    </li>
+                    <li ng-class="{'active': theme == 'bootplus'}">
+                        <a href="#" ng-click="theme = 'bootplus'">bootplus</a>
+                    </li>
+                </ul>
                 <div class="nav-collapse collapse">
                     <ul class="nav">
                         <li class="active">

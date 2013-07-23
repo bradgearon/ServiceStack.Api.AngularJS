@@ -167,6 +167,18 @@
       <DependentUpon>api.less</DependentUpon>
     </Content>
     <Content Include="css\app.css" />
+    <Content Include="css\bootplus-responsive.css">
+      <DependentUpon>bootplus-responsive.less</DependentUpon>
+    </Content>
+    <Content Include="css\bootplus-responsive.min.css">
+      <DependentUpon>bootplus-responsive.less</DependentUpon>
+    </Content>
+    <Content Include="css\bootplus.css">
+      <DependentUpon>bootplus.less</DependentUpon>
+    </Content>
+    <Content Include="css\bootplus.min.css">
+      <DependentUpon>bootplus.less</DependentUpon>
+    </Content>
     <Content Include="css\bootplus\tests\buttons.html" />
     <Content Include="css\bootplus\tests\css-tests.css" />
     <Content Include="css\bootplus\tests\css-tests.html" />
@@ -347,6 +359,8 @@
     <Content Include="font\fontawesome-webfont.ttf" />
     <Content Include="font\fontawesome-webfont.woff" />
     <Content Include="font\FontAwesome.otf" />
+    <Content Include="css\bootplus.less" />
+    <Content Include="css\bootplus-responsive.less" />
     <None Include="Properties\PublishProfiles\Default Settings.pubxml" />
   </ItemGroup>
   <PropertyGroup>

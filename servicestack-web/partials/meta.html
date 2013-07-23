@@ -38,9 +38,9 @@
                         <div class="api api-{{resourceClass[op.httpMethod]}}">
                             <div class="title">{{op.httpMethod}}</div>
                             <div class="toolbar">
-                                <span style="padding-left: 15px; font-size: 1.5em;">{{rapi.path}}</span>
+                                <span class="path">{{rapi.path}}</span>
+                                <div class="description pull-right">{{api.description}}</div>
                             </div>
-                            <div class="description">{{api.description}}</div>
                         </div>
                     </a>
                     <div collapse="!op.open" ng-class="{'well': op.open}">
@@ -134,11 +134,12 @@
                         <div class="row-fluid" ng-show="op.response.data">
                             <h3>Response Data: </h3>
                             <div class="alert alert-success" ng-show="!op.response.data.push">
-                                <span>
-                                    {{op.response.data}}
+                                <span ng-repeat="(key, prop) in op.response.data">
+                                    <b>{{key}}</b>
+                                    <span>{{prop}}</span>
                                 </span>
-                            </div> 
-                            <div class="alert alert-success" ng-repeat="data in op.response.data" 
+                            </div>
+                            <div class="alert alert-success" ng-repeat="data in op.response.data"
                                 ng-show="op.response.data.push">
                                 <span ng-repeat="(key, prop) in data">
                                     <b>{{key}}</b>

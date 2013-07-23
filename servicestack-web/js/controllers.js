@@ -2,6 +2,14 @@
 /* Controllers */
 var inject = ['$scope', '$location', 'Model', '$routeParams', '$cookies', '$interpolate', '$http'];
 
+/* if webapi
+var docService = 'docs';
+var docResource = 'docs';
+*/
+
+var docService = 'resources';
+var docResource = 'resource';
+
 function MetaCtrl($scope, $location, Model, $routeParams, $cookies, $interpolate, $http) {
 
     $scope.resourceClass = {
@@ -42,6 +50,7 @@ function MetaCtrl($scope, $location, Model, $routeParams, $cookies, $interpolate
 
         svc.doAction(url, resourceFn[action], transformRequest)(model,
             function (result, headers) {
+                op.response.typeof = typeof result;
                 op.response.data = result;
                 op.response.headers = headers();
             },
@@ -75,20 +84,20 @@ function MetaCtrl($scope, $location, Model, $routeParams, $cookies, $interpolate
         expandAll(api);
     }
 
-    $scope.metadata = Model.get({ service: 'resources' }, function (response) {
+    $scope.metadata = Model.get({ service: docService }, function (response) {
         for (var i = 0; i < response.apis.length; i++) {
             var basePath = response.basePath;
             response.apis[i].name =
                 $(response.apis[i].path.split('/')).last().get(0);
 
             var resource = {
-                service: 'resource',
+                service: docResource,
                 resource: response.apis[i].name
             };
 
             $scope.metadata.apis[i].resource = Model.get(resource, function (response) {
                 angular.forEach(response.apis, function (api) {
-                    var url = basePath + api.path.replace(/\{([^{}*]*)\*?\}/, '{{$1}}');
+                    var url = response.basePath + api.path.replace(/\{([^{}*]*)\*?\}/, '{{$1}}');
                     api.pathFn = $interpolate(url);
                     angular.forEach(api.operations, function (operation) {
                         if (operation.httpMethod == 'GET'
