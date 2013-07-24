@@ -1,3 +1,6 @@
 [submodule "servicestack-web/css/bootstrap"]
 	path = servicestack-web/css/bootstrap
 	url = https://github.com/twitter/bootstrap.git
+[submodule "servicestack-web/css/bootplus"]
+	path = servicestack-web/css/bootplus
+	url = https://github.com/aozora/bootplus
