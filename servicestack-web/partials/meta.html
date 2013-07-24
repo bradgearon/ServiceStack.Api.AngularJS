@@ -33,16 +33,18 @@
         </div>
         <div collapse="api.collapse">
             <div ng-repeat="rapi in api.resource.apis" class="api-container">
-                <div class="row-fluid" ng-repeat="op in rapi.operations" style="margin-bottom: 10px;">
-                    <a ng-click="op.open = !op.open" href="#">
-                        <div class="api api-{{resourceClass[op.httpMethod]}}">
-                            <div class="title">{{op.httpMethod}}</div>
-                            <div class="toolbar">
-                                <span class="path">{{rapi.path}}</span>
-                                <div class="description pull-right">{{api.description}}</div>
+                <div ng-repeat="op in rapi.operations" style="margin-bottom: 10px;">
+                    <div class="row-fluid">
+                        <a ng-click="op.open = !op.open" href="#">
+                            <div class="api api-{{resourceClass[op.httpMethod]}}">
+                                <div class="title">{{op.httpMethod}}</div>
+                                <div class="toolbar">
+                                    <span class="path">{{rapi.path}}</span>
+                                    <span class="description pull-right">{{api.description}}</span>
+                                </div>
                             </div>
-                        </div>
-                    </a>
+                        </a>
+                    </div>
                     <div collapse="!op.open" ng-class="{'well': op.open}">
                         <div class="row-fluid">
                             <ul class="nav nav-tabs">
@@ -133,18 +135,11 @@
 
                         <div class="row-fluid" ng-show="op.response.data">
                             <h3>Response Data: </h3>
-                            <div class="alert alert-success" ng-show="!op.response.data.push">
-                                <span ng-repeat="(key, prop) in op.response.data">
+                            <div class="alert alert-success" ng-repeat="data in op.response.data.results">
+                                <p ng-repeat="(key, prop) in data">
                                     <b>{{key}}</b>
                                     <span>{{prop}}</span>
-                                </span>
-                            </div>
-                            <div class="alert alert-success" ng-repeat="data in op.response.data"
-                                ng-show="op.response.data.push">
-                                <span ng-repeat="(key, prop) in data">
-                                    <b>{{key}}</b>
-                                    <span>{{prop}}</span>
-                                </span>
+                                </p>
                             </div>
                         </div>
 

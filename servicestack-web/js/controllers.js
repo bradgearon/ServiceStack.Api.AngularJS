@@ -43,12 +43,26 @@ function MetaCtrl($scope, $location, Model, $routeParams, $cookies, $interpolate
             angular.extend(svc, model);
         }
 
-        var transformRequest = function (fn, headerFn) {
+        $http.defaults.transformResponse.push(function (result, headerFn) {
+
+            if (!result.push) {
+                result = { results: [result] };
+            }
+            else {
+                result = { results: result };
+            }
+
+            $http.defaults.transformResponse.pop();
+            return result;
+        });
+
+        $http.defaults.transformRequest.push(function (fn, headerFn) {
             op.request.headers = headerFn();
             op.request.url = url;
-        };
+            $http.defaults.transformRequest.pop();
+        });
 
-        svc.doAction(url, resourceFn[action], transformRequest)(model,
+        svc.doAction(url, resourceFn[action])(model,
             function (result, headers) {
                 op.response.typeof = typeof result;
                 op.response.data = result;
@@ -59,8 +73,8 @@ function MetaCtrl($scope, $location, Model, $routeParams, $cookies, $interpolate
                     data: error.data,
                     headers: error.headers(),
                     status: error.status
-            };
-        });
+                };
+            });
 
     };
 
@@ -100,11 +114,6 @@ function MetaCtrl($scope, $location, Model, $routeParams, $cookies, $interpolate
                     var url = response.basePath + api.path.replace(/\{([^{}*]*)\*?\}/, '{{$1}}');
                     api.pathFn = $interpolate(url);
                     angular.forEach(api.operations, function (operation) {
-                        if (operation.httpMethod == 'GET'
-                            && operation.responseClass
-                            && operation.responseClass.indexOf('[') > 0) {
-                            operation.httpMethod = 'QUERY';
-                        }
                         operation.queryParameters = [];
                         angular.forEach(api.pathFn.parts, function (part) {
                             if (typeof part === 'function') {
